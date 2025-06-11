@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       service: 'gmail',
       auth: {
         user: 'trueformchicago@gmail.com',
-        pass: 'tlvcqanekatkorvu' // App password
+        pass: 'tlvcqanekatkorvu'
       },
     });
 
