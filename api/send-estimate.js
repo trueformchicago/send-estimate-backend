@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   const { to, subject, message, attachment } = req.body;
 
-  if (!to || !attachment) {
+  if (!to || !subject || !message || !attachment) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -15,29 +15,29 @@ export default async function handler(req, res) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: 'trueformchicago@gmail.com',
+        pass: 'tlvcqanekatkorvu' // App password
       },
     });
 
     const mailOptions = {
-      from: `TRUEFORM CHICAGO <${process.env.EMAIL_USER}>`,
+      from: 'TRUEFORM Chicago <trueformchicago@gmail.com>',
       to,
-      subject: subject || 'Your Estimate from TrueForm Chicago',
-      text: message || 'Attached is your TrueForm estimate. Let us know if you have any questions.',
+      subject,
+      text: message,
       attachments: [
         {
           filename: 'estimate.pdf',
           content: Buffer.from(attachment, 'base64'),
-          contentType: 'application/pdf',
-        },
-      ],
+          contentType: 'application/pdf'
+        }
+      ]
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'Email sent successfully' });
+    res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Email error:', error);
-    res.status(500).json({ error: 'Email failed to send' });
+    console.error('Email sending error:', error);
+    res.status(500).json({ error: 'Email sending failed' });
   }
 }
